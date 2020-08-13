@@ -47,12 +47,15 @@ class App extends Component {
           '&token=bsg07g7rh5r8gpgltss0'
       )
       .then((response) => {
-        let current = response.data.c
+        let data = response.data
+        let current = data.c
+        let previousClose = data.pc
 
         if (current) {
           const updatedSymbol = {
             ...this.state.symbols[symbol],
             currentPrice: current ? current : null,
+            previousClose: previousClose ? previousClose : null,
           }
           this.updateSymbol(symbol, updatedSymbol)
         }
@@ -171,7 +174,8 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log('ENV_NODE', process.env.NODE_ENV)
+    document.body.classList.add('bg-gray-100')
+
     console.log('componentDidMount', this)
     database
       .ref('symbols')
@@ -188,8 +192,10 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        <h1>Target Watch</h1>
+      <div className="container mx-auto px-2">
+        <h1 className="leading-relaxed">
+          <span role="img">📈</span> Target Watch
+        </h1>
 
         <form onSubmit={this.handleSubmit}>
           <input
@@ -199,16 +205,27 @@ class App extends Component {
             onChange={this.handleChange}
             value={this.state.symbol}
             style={{ textTransform: 'uppercase' }}
+            className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none"
           />
-          <button>Add Symbol</button>
+          <button className="btn btn-blue">Add Symbol </button>
         </form>
-        <ul className="symbols">
-          {Object.keys(this.state.symbols)
-            .reverse()
-            .map((key) => (
-              <Symbol key={key} index={key} details={this.state.symbols[key]} />
-            ))}
-        </ul>
+
+        <div className="">
+          <section className="my-8">
+            <div className="text-xl py-2">Recent Search</div>
+            <div className=" py-4 border-t border-gray-400 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              {Object.keys(this.state.symbols)
+                .reverse()
+                .map((key) => (
+                  <Symbol
+                    key={key}
+                    index={key}
+                    details={this.state.symbols[key]}
+                  />
+                ))}
+            </div>
+          </section>
+        </div>
       </div>
     )
   }
