@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import cheerio from 'cheerio'
 import moment from 'moment'
-import database from '../base'
+import { auth, database } from '../base'
 import Symbol from './Symbol'
 
 class App extends Component {
@@ -177,6 +177,7 @@ class App extends Component {
     document.body.classList.add('bg-gray-100')
 
     console.log('componentDidMount', this)
+    console.log('auth', auth)
     database
       .ref('symbols')
       .orderByChild('timestamp')
