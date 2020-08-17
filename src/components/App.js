@@ -50,7 +50,8 @@ class App extends Component {
       .get(
         'https://finnhub.io/api/v1/quote?symbol=' +
           symbol.toUpperCase() +
-          '&token=bsg07g7rh5r8gpgltss0'
+          '&token=' +
+          process.env.REACT_APP_FINNHUB_TOKEN
       )
       .then((response) => {
         let data = response.data
