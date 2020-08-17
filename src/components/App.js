@@ -225,7 +225,10 @@ class App extends Component {
           <header className="flex justify-between">
             <Link to="/">
               <h1 className="leading-relaxed">
-                <span role="img">📈</span> Target Watch
+                <span role="img" aria-label="img">
+                  📈
+                </span>{' '}
+                Target Watch
               </h1>
             </Link>
             <nav className="">
