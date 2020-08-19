@@ -246,42 +246,37 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <div className="container mx-auto px-2">
-          <header className="flex justify-between">
-            <Link to="/">
-              <h1 className="leading-relaxed">
-                <span role="img" aria-label="img">
-                  📈
-                </span>{' '}
-                Target Watch
-              </h1>
-            </Link>
-            <nav className="">
-              {this.state.uid ? (
-                <div className="flex">
-                  <div className="p-2 mx-2">Hi, {this.state.displayName}</div>
-                  <button
-                    className="p-2"
-                    onClick={() => {
-                      this.logout()
-                    }}
-                  >
-                    Sign out
-                  </button>
-                </div>
-              ) : (
-                <div className="flex">
-                  <Link className="p-2 mx-2" to="/signup">
-                    sign up
-                  </Link>
-                  <Link className="p-2 mx-2" to="/signin">
-                    sign in
-                  </Link>
-                </div>
-              )}
-            </nav>
-          </header>
+        <header className="container mx-auto px-2 flex justify-between">
+          <Link to="/" className="p-2">
+            <img src="/navbar_logo_32.svg" alt="Logo" />
+          </Link>
 
+          {this.state.uid ? (
+            <div className="flex align-middle">
+              <div className="p-2 mx-2 flex justify-center items-center">
+                Hi, {this.state.displayName}
+              </div>
+              <button
+                className="p-2"
+                onClick={() => {
+                  this.logout()
+                }}
+              >
+                Sign out
+              </button>
+            </div>
+          ) : (
+            <div className="flex">
+              <Link className="p-2 mx-2" to="/signup">
+                sign up
+              </Link>
+              <Link className="p-2 mx-2" to="/signin">
+                sign in
+              </Link>
+            </div>
+          )}
+        </header>
+        <div className="container mx-auto px-2">
           <Switch>
             <Route exact path="/">
               <form onSubmit={this.handleSubmit}>
