@@ -30,8 +30,6 @@ class Symbol extends Component {
   }
 
   render() {
-    console.log('render symbol')
-
     const {
       name,
       currentPrice,
@@ -43,7 +41,7 @@ class Symbol extends Component {
     } = this.props.details
 
     return (
-      <div className="transition ease-in duration-300 transform hover:scale-105 rounded border border-gray-500 bg-white">
+      <div className="rounded border border-gray-500 bg-white">
         <div className="px-4 py-4">
           <div className="text-base mb-2">
             {name}

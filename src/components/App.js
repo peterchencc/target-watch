@@ -3,18 +3,21 @@ import axios from 'axios'
 import cheerio from 'cheerio'
 import moment from 'moment'
 import { auth, database } from '../base'
-import Symbol from './Symbol'
+import List from './List'
 import SignUp from './SignUp'
 import SignIn from './SignIn'
 import NotFound from './NotFound'
+import Modal from './Modal'
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
 
 class App extends Component {
   state = {
+    showModal: false,
     uid: null,
     displayName: null,
     symbols: {},
     currentSymbol: '',
+    recentSearch: {},
   }
 
   handleSubmit = (e) => {
@@ -31,6 +34,10 @@ class App extends Component {
       currentPrice: '',
       targetPrices: [],
     }
+
+    const recentSearch = { ...this.state.recentSearch }
+    recentSearch[newSymbol.name] = newSymbol.timestamp
+    this.setState({ recentSearch })
 
     this.addSymbol(newSymbol)
 
@@ -180,8 +187,18 @@ class App extends Component {
     database.ref('symbols').update(updates)
   }
 
+  showModal = (e) => {
+    this.setState({
+      showModal: !this.state.showModal,
+    })
+  }
+
   componentDidMount() {
-    document.body.classList.add('bg-gray-100')
+    console.log('App componentDidMount')
+    const localStorageRef = localStorage.getItem('recent-search')
+    if (localStorageRef) {
+      this.setState({ recentSearch: JSON.parse(localStorageRef) })
+    }
 
     auth.onAuthStateChanged((user) => {
       if (user) {
@@ -210,6 +227,14 @@ class App extends Component {
         console.log('symbols', symbols)
         this.setState({ symbols })
       })
+  }
+
+  componentDidUpdate() {
+    console.log('App componentDidUpdate')
+    localStorage.setItem(
+      'recent-search',
+      JSON.stringify(this.state.recentSearch)
+    )
   }
 
   logout = async () => {
@@ -269,25 +294,40 @@ class App extends Component {
                   style={{ textTransform: 'uppercase' }}
                   className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none"
                 />
-                <button className="btn btn-blue">Add Symbol </button>
+                <button className="btn btn-blue">Add Symbol</button>
               </form>
 
-              <div className="">
-                <section className="my-8">
-                  <div className="text-xl py-2">Recent Search</div>
-                  <div className=" py-4 border-t border-gray-400 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                    {Object.keys(this.state.symbols)
-                      .reverse()
-                      .map((key) => (
-                        <Symbol
-                          key={key}
-                          index={key}
-                          details={this.state.symbols[key]}
-                        />
-                      ))}
-                  </div>
-                </section>
-              </div>
+              <List
+                selectedSymbols={this.state.recentSearch}
+                symbols={this.state.symbols}
+                title="All Recent Search"
+              ></List>
+
+              <section>
+                <div className="flex justify-between">
+                  <div className="text-xl">Watchlist</div>
+                  <button
+                    onClick={(e) => {
+                      this.showModal(e)
+                    }}
+                  >
+                    + Create Watchlist
+                  </button>
+                </div>
+
+                <List
+                  selectedSymbols={{}}
+                  symbols={this.state.symbols}
+                  title="Tech"
+                ></List>
+              </section>
+              <Modal
+                onClose={this.showModal}
+                show={this.state.showModal}
+                title="Create a new watch list"
+              >
+                hello
+              </Modal>
             </Route>
             <Route exact path="/signup">
               <SignUp />
