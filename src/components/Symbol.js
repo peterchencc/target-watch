@@ -40,6 +40,8 @@ class Symbol extends Component {
       recentTargets,
     } = this.props.details
 
+    let ratingLink = 'https://www.benzinga.com/stock/' + name + '/ratings'
+
     return (
       <div className="rounded border border-gray-500 bg-white">
         <div className="px-4 py-4">
@@ -89,15 +91,18 @@ class Symbol extends Component {
 
             {recentTargets && recentTargets.length > 0 && (
               <div className=" lowercase mt-2 text-xs font-light tracking-tighter">
-                based on {recentTargets.length} ratings in past{' '}
-                {targetsDuration + ' days'}
+                based on {recentTargets.length}{' '}
+                <a
+                  className="hover:text-blue-700"
+                  href={ratingLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  ratings
+                </a>{' '}
+                in past {targetsDuration + ' days'}
               </div>
             )}
-            {/* {latestTargetDate && (
-              <div className="text-xs font-light">
-                latest rating {moment(latestTargetDate).fromNow()}
-              </div>
-            )} */}
           </div>
         </div>
       </div>
