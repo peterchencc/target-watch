@@ -3,11 +3,11 @@ import axios from 'axios'
 import cheerio from 'cheerio'
 import moment from 'moment'
 import { auth, database } from '../base'
-import List from './List'
 import SignUp from './SignUp'
 import SignIn from './SignIn'
 import NotFound from './NotFound'
-import Modal from './Modal'
+import RecentSearch from './RecentSearch'
+import WatchListWrapper from './WatchListWrapper'
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
 
 class App extends Component {
@@ -16,40 +16,6 @@ class App extends Component {
     uid: null,
     displayName: null,
     symbols: {},
-    currentSymbol: '',
-    recentSearch: {},
-  }
-
-  handleSubmit = (e) => {
-    console.log('handleSubmit start')
-    e.preventDefault()
-
-    if (!this.state.currentSymbol) {
-      return console.log('no input')
-    }
-
-    const newSymbol = {
-      timestamp: Date.now(),
-      name: this.state.currentSymbol,
-      currentPrice: '',
-      targetPrices: [],
-    }
-
-    const recentSearch = { ...this.state.recentSearch }
-    recentSearch[newSymbol.name] = newSymbol.timestamp
-    this.setState({ recentSearch })
-
-    this.addSymbol(newSymbol)
-
-    // to fetch finnhub current price api
-    this.fetchCurrentPrice(this.state.currentSymbol)
-
-    // to read symbol's data at firebase for target price, and return symbol's data
-
-    // if target price hasn't been updated
-    this.fetchTargetPrices(this.state.currentSymbol) // (and return symbol's data?)
-    console.log('handleSubmit end')
-    e.currentTarget.reset()
   }
 
   fetchCurrentPrice = async (symbol) => {
@@ -71,7 +37,7 @@ class App extends Component {
             currentPrice: current ? current : null,
             previousClose: previousClose ? previousClose : null,
           }
-          this.updateSymbol(symbol, updatedSymbol)
+          this.dbUpdateSymbol(symbol, updatedSymbol)
         }
       })
   }
@@ -123,7 +89,7 @@ class App extends Component {
         ...recentTargetsDetail,
       }
 
-      this.updateSymbol(symbol, updatedSymbol)
+      this.dbUpdateSymbol(symbol, updatedSymbol)
     }
   }
 
@@ -171,17 +137,37 @@ class App extends Component {
     }
   }
 
-  handleChange = (e) => {
-    this.setState({ currentSymbol: e.target.value.toUpperCase() })
+  getSymbol = (symbolName) => {
+    if (symbolName in this.state.symbols) {
+      console.log(
+        'getSymbol & fetch data & update',
+        this.state.symbols[symbolName]
+      )
+      this.fetchAndUpdateSymbol(symbolName)
+    } else {
+      const newSymbol = {
+        timestamp: Date.now(),
+        name: symbolName,
+        currentPrice: '',
+        targetPrices: [],
+      }
+      this.dbCreateSymbol(newSymbol)
+      this.fetchAndUpdateSymbol(symbolName)
+    }
   }
 
-  addSymbol = (newSymbol) => {
+  fetchAndUpdateSymbol = (symbolName) => {
+    this.fetchCurrentPrice(symbolName)
+    this.fetchTargetPrices(symbolName)
+  }
+
+  dbCreateSymbol = (newSymbol) => {
     database.ref('/symbols/' + newSymbol.name).set({
       ...newSymbol,
     })
   }
 
-  updateSymbol = (key, updatedSymbol) => {
+  dbUpdateSymbol = (key, updatedSymbol) => {
     let updates = {}
     updates[key] = updatedSymbol
     database.ref('symbols').update(updates)
@@ -195,10 +181,7 @@ class App extends Component {
 
   componentDidMount() {
     console.log('App componentDidMount')
-    const localStorageRef = localStorage.getItem('recent-search')
-    if (localStorageRef) {
-      this.setState({ recentSearch: JSON.parse(localStorageRef) })
-    }
+    // console.log('recentSearch', this.state.recentSearch)
 
     auth.onAuthStateChanged((user) => {
       if (user) {
@@ -224,17 +207,13 @@ class App extends Component {
         snapshot.forEach((snap) => {
           symbols[snap.key] = snap.val()
         })
-        console.log('symbols', symbols)
+        console.log('database symbols', symbols)
         this.setState({ symbols })
       })
   }
 
   componentDidUpdate() {
     console.log('App componentDidUpdate')
-    localStorage.setItem(
-      'recent-search',
-      JSON.stringify(this.state.recentSearch)
-    )
   }
 
   logout = async () => {
@@ -279,50 +258,17 @@ class App extends Component {
         <div className="container mx-auto px-2">
           <Switch>
             <Route exact path="/">
-              <form onSubmit={this.handleSubmit}>
-                <input
-                  id="new-symbol"
-                  type="text"
-                  placeholder="Symbol"
-                  onChange={this.handleChange}
-                  value={this.state.symbol}
-                  style={{ textTransform: 'uppercase' }}
-                  className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none"
-                />
-                <button className="btn btn-blue">Add Symbol</button>
-              </form>
-
-              <List
-                selectedSymbols={this.state.recentSearch}
+              <RecentSearch
                 symbols={this.state.symbols}
-                title="All Recent Search"
-              ></List>
-
-              <section>
-                <div className="flex justify-between">
-                  <div className="text-xl">Watchlist</div>
-                  <button
-                    onClick={(e) => {
-                      this.showModal(e)
-                    }}
-                  >
-                    + Create Watchlist
-                  </button>
-                </div>
-
-                <List
-                  selectedSymbols={{}}
-                  symbols={this.state.symbols}
-                  title="Tech"
-                ></List>
-              </section>
-              <Modal
-                onClose={this.showModal}
-                show={this.state.showModal}
-                title="Create a new watch list"
-              >
-                hello
-              </Modal>
+                getSymbol={this.getSymbol}
+              />
+              <WatchListWrapper
+                getSymbol={this.getSymbol}
+                showModal={this.state.showModal}
+                handleShowModal={this.showModal}
+                currentUser={this.state.uid}
+                symbols={this.state.symbols}
+              ></WatchListWrapper>
             </Route>
             <Route exact path="/signup">
               <SignUp />
