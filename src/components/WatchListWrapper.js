@@ -49,22 +49,28 @@ const WatchListWrapper = (props) => {
   useEffect(() => {
     console.log('WatchListWrapper useEffect')
     console.log('props.currentUser', user)
-    firestore
-      .collection('watchlists')
-      .where('uid', '==', user)
-      .get()
-      .then(function (querySnapshot) {
-        const lists = []
-        querySnapshot.forEach(function (doc) {
-          let data = { id: doc.id, ...doc.data() }
-          lists.push(data)
+    if (user) {
+      firestore
+        .collection('watchlists')
+        .where('uid', '==', user)
+        .get()
+        .then(function (querySnapshot) {
+          const lists = []
+          querySnapshot.forEach(function (doc) {
+            let data = { id: doc.id, ...doc.data() }
+            lists.push(data)
+          })
+          setLists(lists)
         })
-        setLists(lists)
-      })
-      .catch(function (error) {
-        console.log('Error getting documents: ', error)
-      })
+        .catch(function (error) {
+          console.log('Error getting documents: ', error)
+        })
+    }
   }, [user])
+
+  if (!user) {
+    return <div>You need to log in!</div>
+  }
 
   return (
     <section>
