@@ -33,6 +33,10 @@ const RecentSearch = (props) => {
     setSymbol('')
   }
 
+  const clearRecentSearch = () => {
+    setRecentSearch([])
+  }
+
   return (
     <div>
       <form onSubmit={handleFormSubmit}>
@@ -52,6 +56,7 @@ const RecentSearch = (props) => {
         <section className="my-8">
           <div className="flex justify-between border-b border-gray-400">
             <div className="text-xl py-2">All Recent Search</div>
+            <button onClick={clearRecentSearch}>clear</button>
           </div>
 
           {recentSearch && recentSearch.length > 0 ? (
