@@ -25,9 +25,16 @@ const PriceChange = (props) => {
 }
 
 const Symbol = (props) => {
+  const refetchData = () => {
+    props.getSymbol(props.name)
+  }
+
   if (!props.data) {
     return (
-      <div className="rounded border border-gray-500 bg-white">
+      <div
+        className="rounded border border-gray-500 bg-white"
+        onClick={refetchData}
+      >
         <div className="px-4 py-4">
           <div className="text-base mb-2">
             {props.name}
@@ -69,17 +76,10 @@ const Symbol = (props) => {
     recentTargets,
   } = props.data
 
-  const refetchData = () => {
-    props.getSymbol(name)
-  }
-
   let ratingLink = 'https://www.benzinga.com/stock/' + name + '/ratings'
 
   return (
-    <div
-      className="rounded border border-gray-500 bg-white"
-      onClick={refetchData}
-    >
+    <div className="rounded border border-gray-500 bg-white">
       <div className="px-4 py-4">
         <div className="text-base mb-2">
           {name}
