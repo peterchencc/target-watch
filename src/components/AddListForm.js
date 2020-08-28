@@ -6,7 +6,7 @@ const AddListForm = (props) => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target
-    setList({ ...list, [name]: value })
+    setList((list) => ({ ...list, [name]: value }))
   }
 
   const handleFormSubmit = (event) => {
