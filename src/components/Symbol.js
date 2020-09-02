@@ -79,7 +79,10 @@ const Symbol = (props) => {
   let ratingLink = 'https://www.benzinga.com/stock/' + name + '/ratings'
 
   return (
-    <div className="rounded border border-gray-500 bg-white">
+    <div
+      className="rounded border border-gray-500 bg-white"
+      onClick={refetchData}
+    >
       <div className="px-4 py-4">
         <div className="text-base mb-2">
           {name}
