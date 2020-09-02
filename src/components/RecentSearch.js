@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Autocomplete from './Autocomplete'
 import Symbol from './Symbol'
 
 const RecentSearch = (props) => {
@@ -14,10 +15,6 @@ const RecentSearch = (props) => {
   }, [recentSearch])
 
   const [symbol, setSymbol] = useState('')
-
-  const handleInputChange = (event) => {
-    setSymbol(event.target.value)
-  }
 
   const handleFormSubmit = (event) => {
     event.preventDefault()
@@ -39,18 +36,12 @@ const RecentSearch = (props) => {
 
   return (
     <div>
-      <form onSubmit={handleFormSubmit}>
-        <input
-          id="new-symbol"
-          type="text"
-          placeholder="Symbol"
-          onChange={handleInputChange}
-          value={symbol}
-          style={{ textTransform: 'uppercase' }}
-          className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none"
-        />
-        <button className="btn btn-blue">Search</button>
-      </form>
+      <div className="flex justify-center  p-12 m-6">
+        <form onSubmit={handleFormSubmit}>
+          <Autocomplete setSymbol={setSymbol} />
+          <button className="btn btn-blue rounded-l-none">Search</button>
+        </form>
+      </div>
 
       <div className="">
         <section className="my-8">

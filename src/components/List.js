@@ -42,7 +42,15 @@ const List = (props) => {
         <div className="flex justify-between border-b border-gray-400">
           <div className="text-xl py-2">{title}</div>
           <AddSymbolForm addSymbol={addSymbol}></AddSymbolForm>
-          <button onClick={() => props.deleteList(id)}>Delete</button>
+          <button
+            onClick={() => {
+              if (window.confirm('Are you sure to delete this list?')) {
+                props.deleteList(id)
+              }
+            }}
+          >
+            Delete
+          </button>
         </div>
 
         {selectedSymbols.length > 0 ? (

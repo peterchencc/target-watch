@@ -1,15 +1,12 @@
 import React, { useState } from 'react'
+import Autocomplete from './Autocomplete'
 
 const AddSymbolForm = (props) => {
   const initialFormState = { name: '' }
   const [symbol, setSymbol] = useState(initialFormState)
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target
-    setSymbol({ ...symbol, [name]: value })
-  }
-
   const handleFormSubmit = (event) => {
+    console.log('AddSymbolForm handleFormSubmit')
     event.preventDefault()
     if (!symbol.name) return
 
@@ -17,16 +14,13 @@ const AddSymbolForm = (props) => {
     setSymbol(initialFormState)
   }
 
+  const updateSymbol = (value) => {
+    setSymbol({ ...symbol, name: value })
+  }
+
   return (
-    <form onSubmit={handleFormSubmit}>
-      <input
-        type="text"
-        name="name"
-        value={symbol.name}
-        onChange={handleInputChange}
-        placeholder="Add Symbol"
-        className="uppercase shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none"
-      />
+    <form onSubmit={handleFormSubmit} className="ml-auto mr-4">
+      <Autocomplete setSymbol={updateSymbol} />
       <button className="btn btn-blue">Add</button>
     </form>
   )
