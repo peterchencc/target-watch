@@ -90,7 +90,7 @@ const Autocomplete = (props) => {
   }
 
   const OptionList = () => {
-    let ulClassName = 'absolute w-48 bg-white border'
+    let ulClassName = 'absolute w-48 bg-white border z-50'
     let liClassName = 'px-3'
     if (!filteredOptions.length) {
       return (

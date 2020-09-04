@@ -32,7 +32,7 @@ const Symbol = (props) => {
   if (!props.data) {
     return (
       <div
-        className="rounded border border-gray-500 bg-white"
+        className="rounded border border-gray-500 bg-white float-left"
         onClick={refetchData}
       >
         <div className="px-4 py-4">
@@ -80,7 +80,7 @@ const Symbol = (props) => {
 
   return (
     <div
-      className="rounded border border-gray-500 bg-white"
+      className="rounded border border-gray-500 bg-white float-left m-2"
       onClick={refetchData}
     >
       <div className="px-4 py-4">
