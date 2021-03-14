@@ -9,7 +9,7 @@ const List = (props) => {
   const { list, symbols } = props
   const { id, title } = list
   const [selectedSymbols, setSelectedSymbols] = useState(list.symbols)
-  const [sortable, setSortable] = useState(false)
+  const [sortingDisable, setSortingDisable] = useState(true)
 
   const addSymbol = (symbol) => {
     props.getSymbol(symbol.name.toUpperCase())
@@ -53,7 +53,7 @@ const List = (props) => {
       <div className="py-4 block relative clearfix">
         {items.map((value, index) => (
           <SortableItem
-            disabled={sortable}
+            disabled={sortingDisable}
             key={`item-${index}`}
             index={index}
             value={value}
@@ -89,9 +89,9 @@ const List = (props) => {
           <AddSymbolForm addSymbol={addSymbol}></AddSymbolForm>
           <button
             className="btn border ml-2"
-            onClick={() => setSortable(!sortable)}
+            onClick={() => setSortingDisable(!sortingDisable)}
           >
-            {sortable ? 'Unsortable' : 'Sortable'}
+            {sortingDisable ? 'Change Order' : 'Done'}
           </button>
           <button
             className="btn border ml-2"

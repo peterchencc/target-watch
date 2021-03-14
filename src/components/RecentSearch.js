@@ -7,7 +7,9 @@ const RecentSearch = (props) => {
 
   const [recentSearch, setRecentSearch] = useState(() => {
     const localData = localStorage.getItem('recent-search')
-    return localData ? JSON.parse(localData) : []
+    return localData
+      ? JSON.parse(localData)
+      : [{ timestamp: Date.now(), name: 'AAPL' }]
   })
 
   useEffect(() => {

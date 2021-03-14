@@ -8,6 +8,17 @@ const Autocomplete = (props) => {
   const [userInput, setUserInput] = useState('')
   const [stockList, setStockList] = useState([])
 
+  useEffect(() => {
+    fetchStockList()
+  }, [])
+
+  useEffect(() => {
+    if (!userInput) {
+      setShowOptions(false)
+      setActiveOption(0)
+    }
+  }, [userInput])
+
   const fetchStockList = () => {
     axios
       .get(
@@ -32,11 +43,12 @@ const Autocomplete = (props) => {
       .filter((option) => {
         return option.symbol.startsWith(currentValue)
       })
+      .sort((a, b) => a.symbol.localeCompare(b.symbol))
       .filter((_, idx) => idx < 10)
 
     setUserInput(currentValue)
     props.setSymbol(currentValue)
-    console.log('onChange filteredOptions.length', filteredOptions.length)
+
     if (filteredOptions.length <= activeOption) {
       setActiveOption(filteredOptions.length)
     }
@@ -44,12 +56,6 @@ const Autocomplete = (props) => {
     setFilteredOptions(filteredOptions)
     setShowOptions(true)
   }
-  useEffect(() => {
-    if (!userInput) {
-      setShowOptions(false)
-      setActiveOption(0)
-    }
-  }, [userInput])
 
   const onClick = (e) => {
     setActiveOption(0)

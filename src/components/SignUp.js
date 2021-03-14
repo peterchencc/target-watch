@@ -106,13 +106,13 @@ const SignUp = () => {
             Sign up
           </button>
         </form>
-        <p className="text-center my-3">or</p>
+        {/* <p className="text-center my-3">or</p> */}
 
-        <button className="btn btn-blue w-full">Sign In with Google</button>
+        {/* <button className="btn btn-blue w-full">Sign In with Google</button> */}
 
         <p className="text-center my-3">
           Already have an account?{' '}
-          <Link to="/" className="text-blue-500 hover:text-blue-600">
+          <Link to="/signin" className="text-blue-500 hover:text-blue-600">
             Sign in here
           </Link>
         </p>

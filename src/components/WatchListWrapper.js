@@ -69,7 +69,9 @@ const WatchListWrapper = (props) => {
   }, [user])
 
   if (!user) {
-    return <div>You need to log in!</div>
+    return (
+      <div>Sign up an account to manage your watchlists in TargetWatch</div>
+    )
   }
 
   return (
